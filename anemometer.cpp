@@ -1,44 +1,70 @@
 #include "anemometer.h"
 
-C2192_Anemometer anm = C2192_Anemometer(ANEMOMETER_PIN);
+bool ANEMOMETER_ENABLED = false;
 
-C2192_Anemometer::C2192_Anemometer(int pin)
+AnemometerC2192 anemometer = AnemometerC2192(ANEMOMETER_PIN);
+
+AnemometerC2192::AnemometerC2192(int pin)
 {
+  // Pin assignment
   _pin = pin;
 }
 
-int C2192_Anemometer::init()
+int AnemometerC2192::init()
 {
-  // Check Valid Pin Assignment
+  // Check valid pin
   if(_pin < 0)
   {
+    ANEMOMETER_ENABLED = false;
     return -1;
   }
 
   // Set Pin to Input
   pinMode(_pin, INPUT);
 
+  ANEMOMETER_ENABLED = true;
+
   // Return Success
   return 0;
 }
 
-float C2192_Anemometer::windspeed()
+float AnemometerC2192::voltage()
 {
-  // Check Valid Pin Assignment
+  // Check valid pin
   if(_pin < 0)
   {
     return -1;
   }
 
-  // Read Digital Voltage Value
-  float voltage = analogRead(_pin);
+  // Read digital voltage value
+  float voltage = float(analogRead(_pin));
 
-  // Convert to Analog Float Voltage
-  voltage *= 5;
-  voltage /= 1024;
+  // Multiply digital value by voltage reference
+  voltage *= VOLTAGE_REFERENCE;
 
-  // Convert Voltage to Windspeed (see datasheet)
-  return (((20.25*voltage) - 8.1)-0.11);
+  // Divide by voltage digital resolution
+  voltage /= VOLTAGE_RESOLUTION;
+
+  // Return analog voltage
+  return voltage;
+}
+
+float AnemometerC2192::windspeed()
+{
+  // Check valid pin
+  if(_pin < 0)
+  {
+    return -1;
+  }
+
+  // Return windspeed in m/s
+  return voltageToWindspeed(voltage());
+}
+
+float AnemometerC2192::voltageToWindspeed(float voltage)
+{
+  // See datasheet
+  return (((voltage-0.4)/1.6)*32.4);
 }
 
 int initAnemometer()

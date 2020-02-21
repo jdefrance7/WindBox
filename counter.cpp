@@ -1,8 +1,10 @@
 #include "counter.h"
 
+bool COUNTER_ENABLED = false;
+
 MM74C94 counter = MM74C94(QD, QC, QB, QA, R01, R02);
 
-MM74C94(int qD, int qC, int qB, int qA, int r01, int r02)
+MM74C94::MM74C94(int qD, int qC, int qB, int qA, int r01, int r02)
 {
   // Pin assignments
   _qD = qD;
@@ -18,6 +20,7 @@ int MM74C94::init()
   // Check valid pin values
   if(_qD < 0 || _qC < 0 || _qB < 0 || _qA < 0 || _r01 < 0 || _r02 < 0)
   {
+    COUNTER_ENABLED = false;
     return -1;
   }
 
@@ -33,6 +36,8 @@ int MM74C94::init()
 
   clear();
 
+  COUNTER_ENABLED = true;
+
   return 0;
 }
 
@@ -46,7 +51,7 @@ int MM74C94::count()
   value |= digitalRead(_qB);
   value <<= 1;
   value |= digitalRead(_qA);
-  return value;
+  return int(value);
 }
 
 int MM74C94::clear()

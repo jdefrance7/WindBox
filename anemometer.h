@@ -1,26 +1,31 @@
 #ifndef ANEMOMETER_H
 #define ANEMOMETER_H
 
+// Arduino Library
 #include <Arduino.h>
 
 #define ANEMOMETER_PIN A0
 
-#define ANEMOMETER_BUFFER_SIZE 8
+#define VOLTAGE_REFERENCE 3.3
 
-#define ANEMOMETER_DELAY 1
+#define VOLTAGE_RESOLUTION 1024
 
-class C2192_Anemometer
+class AnemometerC2192
 {
 public:
-  C2192_Anemometer(int pin);
+  AnemometerC2192(int pin);
   int init();
+  float voltage();
+  float voltageToWindspeed(float voltage);
   float windspeed();
 private:
   int _pin;
 };
 
-extern C2192_Anemometer anemometer;
+extern bool ANEMOMETER_ENABLED;
+
+extern AnemometerC2192 anemometer;
 
 int initAnemometer();
 
-#endif // C2192_ANEMOMETER_H
+#endif // AnemometerC2192_H

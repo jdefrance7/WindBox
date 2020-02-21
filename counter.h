@@ -1,6 +1,7 @@
 #ifndef COUNTER_H
 #define COUNTER_H
 
+// Arduino Library
 #include <Arduino.h>
 
 class MM74C94
@@ -20,6 +21,8 @@ class MM74C94
 };
 
 int initCounter();
+
+extern bool COUNTER_ENABLED;
 
 extern MM74C94 counter;
 

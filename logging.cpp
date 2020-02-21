@@ -3,7 +3,7 @@
 int logging()
 {
   // Check required modules
-  if(!INA260_ENABLED || (!BLUETOOTH_ENABLED && !SERIAL_ENABLED))
+  if(!COUNTER_ENABLED || !ANEMOMETER_ENABLED || (!BLUETOOTH_ENABLED && !SERIAL_ENABLED))
   {
     broadcast("\nERROR: Required modules not enabled.\n");
     return -1;
@@ -81,29 +81,27 @@ int logging()
 
   // Log start timestamp
   line = "START: ";
-  line.concat(getTimestamp());
+  line.concat(timestamp());
   logline(log, line);
 
   // Print data labels
-  line = "TIME,WIND,REVOLUTIONS,BATTERY";
+  line = "TIME,WINDSPEED,REVOLUTIONS,BATTERY";
   logline(log, line);
 
   // Data variables
-  float wind, rpm, battery;
+  averageFloatBuffer windspeed = averageFloatBuffer();
   long revolutions = 0;
-  float winds[8];
-  int windex = 0;
+
+  // Revolutions support
+  int addCount;
 
   // Loop variables
-  long start = getTime();
+  long start = time();
   long last = start;
   long now = start;
 
-  // Anemometer timing
-  long last_wind = millis();
-
   // Polling time loop
-  while(now - start < duration)
+  while((now - start) < duration)
   {
     //  Check for user input to end logging early
     if(getInt() != 0)
@@ -113,49 +111,38 @@ int logging()
     }
 
     // Update revolutions
-    revolutions += long(counter.count());
-    counter.clear();
-
-    // Update Anemometer reading
-    if(millis() - last > ANEMOMETER_DELAY)
+    addCount = counter.count();
+    if(addCount > 0)
     {
-      winds[windex] = anemometer.windspeed();
-      windex += 1;
-      windex %= 8;
+      revolutions += long(addCount);
+      counter.clear();
     }
 
+    // Update windspeed
+    winds.add(anemometer.windspeed());
+
     // Check elapsed time for log condition
-    if(now - last > LOG_INTERVAL)
+    if((now - last) > LOG_INTERVAL)
     {
-      // Get data
-      wind = 0;
-      for(int n = 0; n < 8; n++)
-      {
-        wind += winds[n];
-      }
-      wind /= 8;
-
-      battery = getBatteryVoltage();
-
-      // Arrange in CSV format
+      // Arrange data in CSV format
       line  = String(now)+",";
-      line += String(wind)+",";
+      line += String(windspeed.average())+",";
       line += String(revolutions)+",";
-      line += String(battery);
+      line += String(getBatteryVoltage());
 
       // Log data
       logline(line);
 
       // Update last log time
-      last = getTime();
+      last = time();
     }
     // Poll current time
-    now = getTime();
+    now = time();
   }
 
   // Log end timestamp
   line = "END: ";
-  line.concat(getTimestamp());
+  line.concat(timestamp());
   logline(log, line);
 
   // Close log file if possible

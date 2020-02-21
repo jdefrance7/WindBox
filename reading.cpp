@@ -51,7 +51,7 @@ int reading()
   }
 
   // Check valid filenumber
-  if(fileNumber <= 0 || number >= entryNumber)
+  if(fileNumber < 1 || number >= entryNumber)
   {
     broadcast("\nERROR: Invalid file number.\n");
     return -1;
@@ -60,7 +60,7 @@ int reading()
   // Reset list number
   entryNumber = 1;
 
-  // Iterate through root to find file
+  // Open root to search for file
   root = SD.open("/");
   if(!root)
   {
@@ -68,6 +68,7 @@ int reading()
     return -1;
   }
 
+  // Iterate through root to find file
   while(1)
   {
     // Open next file in root
