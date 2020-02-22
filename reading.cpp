@@ -51,7 +51,7 @@ int reading()
   }
 
   // Check valid filenumber
-  if(fileNumber < 1 || number >= entryNumber)
+  if(fileNumber < 1 || fileNumber >= entryNumber)
   {
     broadcast("\nERROR: Invalid file number.\n");
     return -1;
@@ -94,7 +94,7 @@ int reading()
         while(entry.available())
         {
           // Read in character
-          character = logfile.read();
+          character = entry.read();
 
           // Add character to line
           line.concat(character);

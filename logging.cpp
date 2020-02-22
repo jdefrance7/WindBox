@@ -106,7 +106,7 @@ int logging()
     //  Check for user input to end logging early
     if(getInt() != 0)
     {
-      logline("INFO: Stop command receivied.");
+      logline(log, "INFO: Stop command receivied.");
       break;
     }
 
@@ -119,7 +119,7 @@ int logging()
     }
 
     // Update windspeed
-    winds.add(anemometer.windspeed());
+    windspeed.add(anemometer.windspeed());
 
     // Check elapsed time for log condition
     if((now - last) > LOG_INTERVAL)
@@ -131,7 +131,7 @@ int logging()
       line += String(getBatteryVoltage());
 
       // Log data
-      logline(line);
+      logline(log, line);
 
       // Update last log time
       last = time();

@@ -63,7 +63,7 @@ int MM74C94::clear()
   digitalWrite(_r02, LOW);
 }
 
-int initCounter();
+int initCounter()
 {
     return counter.init();
 }

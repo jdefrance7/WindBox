@@ -22,6 +22,7 @@ class LED
 {
 public:
   LED(int pin);
+  int init();
   void on();
   void off();
   void toggle();

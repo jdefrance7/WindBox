@@ -4,12 +4,20 @@
 // Arduino Library
 #include <Arduino.h>
 
+#define QD 1
+#define QC 2
+#define QB 3
+#define QA 4
+
+#define R01 5
+#define R02 6
+
 class MM74C94
 {
   public:
     MM74C94(int qD, int qC, int qB, int qA, int r01, int r02);
     int init();
-    byte count();
+    int count();
     int clear();
   private:
     int _qD;
@@ -26,4 +34,4 @@ extern bool COUNTER_ENABLED;
 
 extern MM74C94 counter;
 
-#endig // MM74C93_H
+#endif // MM74C93_H

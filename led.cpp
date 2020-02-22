@@ -22,14 +22,14 @@ int LED::init()
   return 0;
 }
 
-int LED::on()
+void LED::on()
 {
   _state = true;
   digitalWrite(_pin, _state);
   return;
 }
 
-int LED::off()
+void LED::off()
 {
   _state = false;
   digitalWrite(_pin, _state);

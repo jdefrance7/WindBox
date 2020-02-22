@@ -25,7 +25,7 @@ int logging();
 class averageFloatBuffer
 {
 public:
-  averageFloat()
+  averageFloatBuffer()
   {
     _index = 0;
     _empty = true;
