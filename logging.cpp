@@ -125,7 +125,7 @@ int logging()
     if((now - last) > LOG_INTERVAL)
     {
       // Arrange data in CSV format
-      line  = String(now)+",";
+      line  = String(time())+",";
       line += String(windspeed.average())+",";
       line += String(revolutions)+",";
       line += String(getBatteryVoltage());
